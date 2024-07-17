@@ -32,15 +32,44 @@ body {
 }
 
 .table td, .table th {
-    vertical-align: middle;
-    text-align: center;
-}
-
-.table th, .table td {
+    vertical-align: top; 
+    text-align: center; 
     padding: 8px; 
     word-wrap: break-word; 
 }
 
 .table th {
     background-color: #f2f2f2;
+}
+
+.freeze-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Fix the header row */
+.freeze-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;    
+}
+
+/* Fix the first column */
+.freeze-table tbody th {
+    position: sticky;
+    left: 0;
+    background-color: #f8f9fa;
+    z-index: 5;
+}
+
+/* Freeze the first header cell (top-left corner) */
+.freeze-table thead th:first-child {
+    left: 0;
+    z-index: 15;
+}
+
+.freeze-table td {
+    position: relative;
+    z-index: 1;
 }

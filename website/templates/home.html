@@ -41,85 +41,155 @@
     {% if results %}
         <h2 align="center">Results</h2>
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped freeze-table">
                 <thead>
                     <tr>
                         <th>Insurance Company Name</th>
-                        <th>Internal Code</th>
-                        <th>Country</th>
-                        <th>City</th>
-                        <th>Region</th>
-                        <th>Include Flag</th>
-                        <th>Notes</th>
-                        <th>Nexus Conditions</th>
-                        <th>Nexus Notes</th>
-                        <th>US Nexus Flag</th>
-                        <th>Other Policy Related</th>
-                        <th>Minimum Policy Face Amount</th>
-                        <th>Minimum Global Net Worth</th>
-                        <th>Age Related</th>
-                        <th>Citizenship/Visa Specified</th>
-                        <th>NRA Notes</th>
-                        <th>General</th>
-                        <th>Min in the US for Prior 12 Months Annually (month)</th>
-                        <th>Min in the US for Prior 24 Months Annually (month)</th>
-                        <th>Min in the US for Prior 48 Months Annually (month)</th>
-                        <th>Min in the US Annually (month)</th>
-                        <th>Min Spend Outside Annually (month)</th>
-                        <th>Citizenship</th>
-                        <th>Visa</th>
-                        <th>Max Total Time Been in the US (year)</th>
-                        <th>Personal Insurance Flag</th>
-                        <th>Need for US Based Coverage Flag</th>
-                        <th>Determining Justified Amounts</th>
-                        <th>Bank Account Min Opened Time Prior to App (month)</th>
-                        <th>Bank Account Info</th>
-                        <th>Bank Balance</th>
-                        <th>Wealth</th>
-                        <th>Time of Verifiable US Assets in the US (month)</th>
-                        <th>Verifiable US Assets in the US</th>
+                        {% for result in results %}
+                            <th>{{ result.Insurance_company_name if result.Insurance_company_name else '' }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for result in results %}
-                        <tr>
-                            <td>{{ result.Insurance_company_name if result.Insurance_company_name else '' }}</td>
+                    <tr>
+                        <th>Internal Code</th>
+                        {% for result in results %}
                             <td>{{ result.Internal_code if result.Internal_code else '' }}</td>
-                            <td>{{ result.Country if result.Country else '' }}</td>
-                            <td>{{ result.City if result.City else '' }}</td>
-                            <td>{{ result.Region if result.Region else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Include Flag</th>
+                        {% for result in results %}
                             <td>{{ result.Include_flag if result.Include_flag else '' }}</td>
                             <!--<td>{{ 'Yes' if result.Include_flag == 1 else 'No' }}</td> -->
-                            <td>{{ result.Notes if result.Notes else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Country_Residence Notes</th>
+                        {% for result in results %}
+                            <td>{{ result.CountryResidence_Notes if result.CountryResidence_Notes else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Nexus Conditions</th>
+                        {% for result in results %}
                             <td>{{ result.Nexus_Conditions if result.Nexus_Conditions else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Nexus Notes</th>
+                        {% for result in results %}
                             <td>{{ result.Nexus_Notes if result.Nexus_Notes else '' }}</td>
-                            <td>{{ result.US_Nexus_flag if result.US_Nexus_flag else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Other Policy Related</th>
+                        {% for result in results %}
                             <td>{{ result.Other_policy_related if result.Other_policy_related else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Minimum Policy Face Amount</th>
+                        {% for result in results %}
                             <td>{{ result.Minimum_policy_face_amount_USD_Denominated if result.Minimum_policy_face_amount_USD_Denominated else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Minimum Global Net Worth</th>
+                        {% for result in results %}
                             <td>{{ result.Minimum_global_net_worth_USD_Denominated if result.Minimum_global_net_worth_USD_Denominated else '' }}</td>
-                            <td>{{ result.Age_related if result.Age_related else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Citizenship/Visa Specified</th>
+                        {% for result in results %}
                             <td>{{ result.Citizenship_visa_specified if result.Citizenship_visa_specified else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>NRA Notes</th>
+                        {% for result in results %}
                             <td>{{ result.NRA_Notes if result.NRA_Notes else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>General</th>
+                        {% for result in results %}
                             <td>{{ result.General if result.General else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Min in the US for Prior 12 Months Annually (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Min_in_the_us_for_prior_12_months_annually_month if result.Min_in_the_us_for_prior_12_months_annually_month else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Min in the US for Prior 24 Months Annually (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Min_in_the_us_for_prior_24_months_annually_month if result.Min_in_the_us_for_prior_24_months_annually_month else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Min in the US for Prior 48 Months Annually (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Min_in_the_us_for_prior_48_months_annually_month if result.Min_in_the_us_for_prior_48_months_annually_month else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Min in the US Annually (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Min_in_the_us_annually_month if result.Min_in_the_us_annually_month else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Min Spend Outside Annually (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Min_spend_outside_annually_month if result.Min_spend_outside_annually_month else '' }}</td>
-                            <td>{{ result.Citizenship if result.Citizenship else '' }}</td>
-                            <td>{{ result.Visa if result.Visa else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Max Total Time Been in the US (year)</th>
+                        {% for result in results %}
                             <td>{{ result.Max_total_time_been_in_the_us_year if result.Max_total_time_been_in_the_us_year else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Personal Insurance Flag</th>
+                        {% for result in results %}
                             <td>{{ result.Personal_insurance_flag if result.Personal_insurance_flag else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Need for US Based Coverage Flag</th>
+                        {% for result in results %}
                             <td>{{ result.Need_for_US_based_coverage_flag if result.Need_for_US_based_coverage_flag else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Determining Justified Amounts</th>
+                        {% for result in results %}
                             <td>{{ result.Determining_justified_amounts if result.Determining_justified_amounts else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Bank Account Min Opened Time Prior to App (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Bank_account_min_opened_time_prior_to_app_month if result.Bank_account_min_opened_time_prior_to_app_month else '' }}</td>
-                            <td>{{ result.Bank_account_info if result.Bank_account_info else '' }}</td>
-                            <td>{{ result.Bank_balance if result.Bank_balance else '' }}</td>
-                            <td>{{ result.Wealth if result.Wealth else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Time of Verifiable US Assets in the US (month)</th>
+                        {% for result in results %}
                             <td>{{ result.Time_of_verifiable_US_assets_in_the_US_month if result.Time_of_verifiable_US_assets_in_the_US_month else '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th>Verifiable US Assets in the US</th>
+                        {% for result in results %}
                             <td>{{ result.Verifiable_US_assets_in_the_US_million if result.Verifiable_US_assets_in_the_US_million else '' }}</td>
-                        </tr>
-                    {% endfor %}
+                        {% endfor %}
+                    </tr>
                 </tbody>
             </table>
         </div>
