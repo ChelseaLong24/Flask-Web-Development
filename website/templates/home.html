@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 align="center">Basic Information</h1>
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <input type="text" name="country" id="country" class="form-control" placeholder="Country" value="{{ country_name }}">
+            </div>
+            <div class="form-group col-md-4">
+                <input type="text" name="city" id="city" class="form-control" placeholder="City" value="{{ city_name }}">
+            </div>
+            <div class="form-group col-md-4">
+                <input type="text" name="region" id="region" class="form-control" placeholder="Region" value="{{ region_name }}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <select name="citizenship" id="citizenship" class="form-control">
+                    <option value="">Select Citizenship</option>
+                    {% for value in citizenship_values %}
+                    <option value="{{ value }}" {% if value == citizenship %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <select name="visa" id="visa" class="form-control">
+                    <option value="">Select Visa</option>
+                    {% for value in visa_values %}
+                    <option value="{{ value }}" {% if value == visa %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    <br />
+    {% if results %}
+        <h2 align="center">Results</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Insurance Company Name</th>
+                        <th>Internal Code</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Region</th>
+                        <th>Include Flag</th>
+                        <th>Notes</th>
+                        <th>Nexus Conditions</th>
+                        <th>Nexus Notes</th>
+                        <th>US Nexus Flag</th>
+                        <th>Other Policy Related</th>
+                        <th>Minimum Policy Face Amount</th>
+                        <th>Minimum Global Net Worth</th>
+                        <th>Age Related</th>
+                        <th>Citizenship/Visa Specified</th>
+                        <th>NRA Notes</th>
+                        <th>General</th>
+                        <th>Min in the US for Prior 12 Months Annually (month)</th>
+                        <th>Min in the US for Prior 24 Months Annually (month)</th>
+                        <th>Min in the US for Prior 48 Months Annually (month)</th>
+                        <th>Min in the US Annually (month)</th>
+                        <th>Min Spend Outside Annually (month)</th>
+                        <th>Citizenship</th>
+                        <th>Visa</th>
+                        <th>Max Total Time Been in the US (year)</th>
+                        <th>Personal Insurance Flag</th>
+                        <th>Need for US Based Coverage Flag</th>
+                        <th>Determining Justified Amounts</th>
+                        <th>Bank Account Min Opened Time Prior to App (month)</th>
+                        <th>Bank Account Info</th>
+                        <th>Bank Balance</th>
+                        <th>Wealth</th>
+                        <th>Time of Verifiable US Assets in the US (month)</th>
+                        <th>Verifiable US Assets in the US</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ result.Insurance_company_name if result.Insurance_company_name else '' }}</td>
+                            <td>{{ result.Internal_code if result.Internal_code else '' }}</td>
+                            <td>{{ result.Country if result.Country else '' }}</td>
+                            <td>{{ result.City if result.City else '' }}</td>
+                            <td>{{ result.Region if result.Region else '' }}</td>
+                            <td>{{ result.Include_flag if result.Include_flag else '' }}</td>
+                            <!--<td>{{ 'Yes' if result.Include_flag == 1 else 'No' }}</td> -->
+                            <td>{{ result.Notes if result.Notes else '' }}</td>
+                            <td>{{ result.Nexus_Conditions if result.Nexus_Conditions else '' }}</td>
+                            <td>{{ result.Nexus_Notes if result.Nexus_Notes else '' }}</td>
+                            <td>{{ result.US_Nexus_flag if result.US_Nexus_flag else '' }}</td>
+                            <td>{{ result.Other_policy_related if result.Other_policy_related else '' }}</td>
+                            <td>{{ result.Minimum_policy_face_amount_USD_Denominated if result.Minimum_policy_face_amount_USD_Denominated else '' }}</td>
+                            <td>{{ result.Minimum_global_net_worth_USD_Denominated if result.Minimum_global_net_worth_USD_Denominated else '' }}</td>
+                            <td>{{ result.Age_related if result.Age_related else '' }}</td>
+                            <td>{{ result.Citizenship_visa_specified if result.Citizenship_visa_specified else '' }}</td>
+                            <td>{{ result.NRA_Notes if result.NRA_Notes else '' }}</td>
+                            <td>{{ result.General if result.General else '' }}</td>
+                            <td>{{ result.Min_in_the_us_for_prior_12_months_annually_month if result.Min_in_the_us_for_prior_12_months_annually_month else '' }}</td>
+                            <td>{{ result.Min_in_the_us_for_prior_24_months_annually_month if result.Min_in_the_us_for_prior_24_months_annually_month else '' }}</td>
+                            <td>{{ result.Min_in_the_us_for_prior_48_months_annually_month if result.Min_in_the_us_for_prior_48_months_annually_month else '' }}</td>
+                            <td>{{ result.Min_in_the_us_annually_month if result.Min_in_the_us_annually_month else '' }}</td>
+                            <td>{{ result.Min_spend_outside_annually_month if result.Min_spend_outside_annually_month else '' }}</td>
+                            <td>{{ result.Citizenship if result.Citizenship else '' }}</td>
+                            <td>{{ result.Visa if result.Visa else '' }}</td>
+                            <td>{{ result.Max_total_time_been_in_the_us_year if result.Max_total_time_been_in_the_us_year else '' }}</td>
+                            <td>{{ result.Personal_insurance_flag if result.Personal_insurance_flag else '' }}</td>
+                            <td>{{ result.Need_for_US_based_coverage_flag if result.Need_for_US_based_coverage_flag else '' }}</td>
+                            <td>{{ result.Determining_justified_amounts if result.Determining_justified_amounts else '' }}</td>
+                            <td>{{ result.Bank_account_min_opened_time_prior_to_app_month if result.Bank_account_min_opened_time_prior_to_app_month else '' }}</td>
+                            <td>{{ result.Bank_account_info if result.Bank_account_info else '' }}</td>
+                            <td>{{ result.Bank_balance if result.Bank_balance else '' }}</td>
+                            <td>{{ result.Wealth if result.Wealth else '' }}</td>
+                            <td>{{ result.Time_of_verifiable_US_assets_in_the_US_month if result.Time_of_verifiable_US_assets_in_the_US_month else '' }}</td>
+                            <td>{{ result.Verifiable_US_assets_in_the_US_million if result.Verifiable_US_assets_in_the_US_million else '' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

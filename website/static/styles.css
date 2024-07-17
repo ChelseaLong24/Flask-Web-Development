@@ -1,0 +1,46 @@
+.navbar .navbar-nav {
+    flex-direction: row; 
+    justify-content: flex-start;  
+}
+
+body {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; 
+}
+
+.container {
+    width: 100%;
+    max-width: 1600px; 
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    box-sizing: border-box;
+}
+
+.table-responsive {
+    overflow-x: auto; 
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table th, .table td {
+    padding: 8px; 
+    word-wrap: break-word; 
+}
+
+.table th {
+    background-color: #f2f2f2;
+}
