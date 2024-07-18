@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import Carrier, Country, CountryResidenceMapping, CarrierInfo, USNexus, USNexusCarrierMapping, NRA, NRAPresenceTypeMapping, NRAFinancialPresence, NRAPhysicalPresence, SSN_TIN_document, Document_carrier_mapping, Approved_Ownership_Structure, Approved_Ownership_Structure_carrier_mapping, Foreign_Travel_Rules_for_USCitizens, Outbound_requirement, Inbound_requirement, ExPats_outbound_mapping, ExPats_Inbound_mapping
 from . import db
 
@@ -257,3 +257,86 @@ def admin():
         carrier_values=carrier_values, 
         selected_carrier=selected_carrier
     )
+
+
+@views.route('/update', methods=['POST'])
+def update():
+    for key, value in request.form.items():
+        if key.startswith('update_'):
+            index = key.split('_')[1]
+            carrier_guid_pk = value
+            carrier = Carrier.query.get(carrier_guid_pk)
+
+            if carrier:
+                carrier.Internal_code = request.form.get(f'Internal_code_{index}')
+                carrier.Alias_used_name = request.form.get(f'Alias_used_name_{index}')
+                carrier.Branch = request.form.get(f'Branch_{index}')
+                carrier.Country = request.form.get(f'Country_{index}')
+                carrier.City = request.form.get(f'City_{index}')
+                carrier.Region = request.form.get(f'Region_{index}')
+                carrier.Include_flag = request.form.get(f'Include_flag_{index}')
+                carrier.Country_category = request.form.get(f'Country_category_{index}')
+                carrier.CountryResidence_Notes = request.form.get(f'CountryResidence_Notes_{index}')
+                carrier.Date_last_updated = request.form.get(f'Date_last_updated_{index}')
+                carrier.Date_last_policy_inforce = request.form.get(f'Date_last_policy_inforce_{index}')
+                carrier.Financial_ratings_institution = request.form.get(f'Financial_ratings_institution_{index}')
+                carrier.Ratings = request.form.get(f'Ratings_{index}')
+                carrier.CarrierInfo_Notes = request.form.get(f'CarrierInfo_Notes_{index}')
+                carrier.Nexus_Conditions = request.form.get(f'Nexus_Conditions_{index}')
+                carrier.Nexus_Notes = request.form.get(f'Nexus_Notes_{index}')
+                carrier.US_Nexus_flag = request.form.get(f'US_Nexus_flag_{index}')
+                carrier.Other_policy_related = request.form.get(f'Other_policy_related_{index}')
+                carrier.Minimum_policy_face_amount_USD_Denominated = request.form.get(f'Minimum_policy_face_amount_USD_Denominated_{index}')
+                carrier.Minimum_global_net_worth_USD_Denominated = request.form.get(f'Minimum_global_net_worth_USD_Denominated_{index}')
+                carrier.Age_related = request.form.get(f'Age_related_{index}')
+                carrier.Citizenship_visa_specified = request.form.get(f'Citizenship_visa_specified_{index}')
+                carrier.NRA_Notes = request.form.get(f'NRA_Notes_{index}')
+                carrier.General = request.form.get(f'General_{index}')
+                carrier.Min_in_the_us_for_prior_12_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_12_months_annually_month_{index}')
+                carrier.Min_in_the_us_for_prior_24_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_24_months_annually_month_{index}')
+                carrier.Min_in_the_us_for_prior_48_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_48_months_annually_month_{index}')
+                carrier.Min_in_the_us_annually_month = request.form.get(f'Min_in_the_us_annually_month_{index}')
+                carrier.Min_spend_outside_annually_month = request.form.get(f'Min_spend_outside_annually_month_{index}')
+                carrier.Max_total_time_been_in_the_us_year = request.form.get(f'Max_total_time_been_in_the_us_year_{index}')
+                carrier.Physical_Citizenship = request.form.get(f'Physical_Citizenship_{index}')
+                carrier.Visa = request.form.get(f'Visa_{index}')
+                carrier.Financial_Citizenship = request.form.get(f'Financial_Citizenship_{index}')
+                carrier.Residence = request.form.get(f'Residence_{index}')
+                carrier.Personal_insurance_flag = request.form.get(f'Personal_insurance_flag_{index}')
+                carrier.Need_for_US_based_coverage_flag = request.form.get(f'Need_for_US_based_coverage_flag_{index}')
+                carrier.Determining_justified_amounts = request.form.get(f'Determining_justified_amounts_{index}')
+                carrier.Bank_account_min_opened_time_prior_to_app_month = request.form.get(f'Bank_account_min_opened_time_prior_to_app_month_{index}')
+                carrier.Bank_account_info = request.form.get(f'Bank_account_info_{index}')
+                carrier.Bank_balance = request.form.get(f'Bank_balance_{index}')
+                carrier.Wealth = request.form.get(f'Wealth_{index}')
+                carrier.Time_of_verifiable_US_assets_in_the_US_month = request.form.get(f'Time_of_verifiable_US_assets_in_the_US_month_{index}')
+                carrier.Verifiable_US_assets_in_the_US_million = request.form.get(f'Verifiable_US_assets_in_the_US_million_{index}')
+                carrier.Document_name = request.form.get(f'Document_name_{index}')
+                carrier.Document_notes = request.form.get(f'Document_notes_{index}')
+                carrier.Ownership_Structure = request.form.get(f'Ownership_Structure_{index}')
+                carrier.Ownership_Structure_carrier_notes = request.form.get(f'Ownership_Structure_carrier_notes_{index}')
+                carrier.Minimum_time_spend_outside_of_the_US_Per_Year_week = request.form.get(f'Minimum_time_spend_outside_of_the_US_Per_Year_week_{index}')
+                carrier.Foreign_country_specified = request.form.get(f'Foreign_country_specified_{index}')
+                carrier.Travel_Notes = request.form.get(f'Travel_Notes_{index}')
+                carrier.Identities = request.form.get(f'Identities_{index}')
+                carrier.Acceptable_residing_country = request.form.get(f'Acceptable_residing_country_{index}')
+                carrier.Foreign_living_condition = request.form.get(f'Foreign_living_condition_{index}')
+                carrier.Exclusion = request.form.get(f'Exclusion_{index}')
+                carrier.Inbound_Identities = request.form.get(f'Inbound_Identities_{index}')
+                carrier.Inbound_Citizenship = request.form.get(f'Inbound_Citizenship_{index}')
+                carrier.Citizenship_exclusion_flag = request.form.get(f'Citizenship_exclusion_flag_{index}')
+                carrier.Acceptable_visa_status_type = request.form.get(f'Acceptable_visa_status_type_{index}')
+                carrier.Min_time_reside_in_us_per_year_month = request.form.get(f'Min_time_reside_in_us_per_year_month_{index}')
+                carrier.Min_time_reside_in_us_month = request.form.get(f'Min_time_reside_in_us_month_{index}')
+                carrier.Continue_reside_flag = request.form.get(f'Continue_reside_flag_{index}')
+                carrier.Nexus_flag = request.form.get(f'Nexus_flag_{index}')
+                carrier.Max_foreign_travel_month = request.form.get(f'Max_foreign_travel_month_{index}')
+                carrier.Inbound_Policy_type = request.form.get(f'Inbound_Policy_type_{index}')
+                carrier.Inbound_Notes = request.form.get(f'Inbound_Notes_{index}')
+
+                db.session.commit()
+                flash('Record updated successfully!', category='success')
+            else:
+                flash('Record not found!', category='error')
+
+    return redirect(url_for('admin'))
