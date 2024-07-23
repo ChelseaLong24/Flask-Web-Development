@@ -136,12 +136,73 @@ def admin():
     results = []
     carrier_values = [carrier[0] for carrier in db.session.query(Carrier.Insurance_company_name).distinct().all()]
     selected_carrier = None
+    selected_feature = None
+
+    feature_dict = {
+        'Insurance_company_name': 'Insurance Company Name',
+        'Alias_used_name': 'Alias Used Name',
+        'Branch': 'Branch',
+        'Include_flag': 'Include Flag',
+        'Country_category': 'Country Category',
+        'Notes': 'Notes',
+        'Nexus_Conditions': 'Nexus Conditions',
+        'Nexus_Notes': 'Nexus Notes',
+        'US_Nexus_flag': 'US Nexus Flag',
+        'Other_policy_related': 'Other Policy Related',
+        'Minimum_policy_face_amount_USD_Denominated': 'Minimum Policy Face Amount (USD Denominated)',
+        'Minimum_global_net_worth_USD_Denominated': 'Minimum Global Net Worth (USD Denominated)',
+        'Age_related': 'Age Related',
+        'Citizenship_visa_specified': 'Citizenship Visa Specified',
+        'General': 'General',
+        'Min_in_the_us_for_prior_12_months_annually_month': 'Min in US for Prior 12 Months (Annually)',
+        'Min_in_the_us_for_prior_24_months_annually_month': 'Min in US for Prior 24 Months (Annually)',
+        'Min_in_the_us_for_prior_48_months_annually_month': 'Min in US for Prior 48 Months (Annually)',
+        'Min_in_the_us_annually_month': 'Min in US Annually',
+        'Min_spend_outside_annually_month': 'Min Spend Outside Annually',
+        'Physical_Citizenship': 'Physical Citizenship',
+        'Visa': 'Visa',
+        'Max_total_time_been_in_the_us_year': 'Max Total Time Been in US (Year)',
+        'Financial_Citizenship': 'Financial Citizenship',
+        'Residence': 'Residence',
+        'Personal_insurance_flag': 'Personal Insurance Flag',
+        'Need_for_US_based_coverage_flag': 'Need for US Based Coverage Flag',
+        'Determining_justified_amounts': 'Determining Justified Amounts',
+        'Bank_account_min_opened_time_prior_to_app_month': 'Bank Account Min Opened Time Prior to App (Month)',
+        'Bank_account_info': 'Bank Account Info',
+        'Bank_balance': 'Bank Balance',
+        'Wealth': 'Wealth',
+        'Time_of_verifiable_US_assets_in_the_US_month': 'Time of Verifiable US Assets in the US (Month)',
+        'Verifiable_US_assets_in_the_US_million': 'Verifiable US Assets in the US (Million)',
+        'Document_name': 'Document Name',
+        'Document_notes': 'Document Notes',
+        'Ownership_Structure': 'Ownership Structure',
+        'Ownership_Structure_carrier_notes': 'Ownership Structure Carrier Notes',
+        'Minimum_time_spend_outside_of_the_US_Per_Year_week': 'Minimum Time Spend Outside of the US (Per Year - Week)',
+        'Foreign_country_specified': 'Foreign Country Specified',
+        'Travel_Notes': 'Travel Notes',
+        'Identities': 'Identities',
+        'Acceptable_residing_country': 'Acceptable Residing Country',
+        'Foreign_living_condition': 'Foreign Living Condition',
+        'Exclusion': 'Exclusion',
+        'Inbound_Identities': 'Inbound Identities',
+        'Inbound_Citizenship': 'Inbound Citizenship',
+        'Citizenship_exclusion_flag': 'Citizenship Exclusion Flag',
+        'Acceptable_visa_status_type': 'Acceptable Visa Status Type',
+        'Min_time_reside_in_us_per_year_month': 'Min Time Reside in US per Year (Month)',
+        'Min_time_reside_in_us_month': 'Min Time Reside in US (Month)',
+        'Continue_reside_flag': 'Continue Reside Flag',
+        'Nexus_flag': 'Nexus Flag',
+        'Max_foreign_travel_month': 'Max Foreign Travel (Month)',
+        'Inbound_Policy_type': 'Inbound Policy Type',
+        'Inbound_Notes': 'Inbound Notes'
+    }
 
     if request.method == 'POST':
         selected_carrier = request.form.get('carrier')
+        selected_feature = request.form.get('feature')
 
         if selected_carrier:
-            results = db.session.query(
+            subquery = db.session.query(
                 Carrier.Insurance_company_name,
                 Carrier.Internal_code,
                 Carrier.Alias_used_name,
@@ -246,7 +307,90 @@ def admin():
                 Inbound_requirement, Inbound_requirement.Inbound_requirement_GUID_PK == ExPats_Inbound_mapping.Inbound_requirement_GUID_FK
             ).filter(
                 Carrier.Insurance_company_name == selected_carrier
-            ).all()
+            ).distinct().subquery()
+
+            query = db.session.query(
+                subquery.c.Insurance_company_name,
+                subquery.c.Internal_code,
+                subquery.c.Alias_used_name,
+                subquery.c.Branch,
+                subquery.c.Country,
+                subquery.c.City,
+                subquery.c.Region,
+                subquery.c.Include_flag,
+                subquery.c.Country_category,
+                subquery.c.CountryResidence_Notes,
+                subquery.c.Date_last_updated,
+                subquery.c.Date_last_policy_inforce,
+                subquery.c.Financial_ratings_institution,
+                subquery.c.Ratings,
+                subquery.c.CarrierInfo_Notes,
+                subquery.c.Nexus_Conditions,
+                subquery.c.Nexus_Notes,
+                subquery.c.US_Nexus_flag,
+                subquery.c.Other_policy_related,
+                subquery.c.Minimum_policy_face_amount_USD_Denominated,
+                subquery.c.Minimum_global_net_worth_USD_Denominated,
+                subquery.c.Age_related,
+                subquery.c.Citizenship_visa_specified,
+                subquery.c.NRA_Notes,
+                subquery.c.General,
+                subquery.c.Min_in_the_us_for_prior_12_months_annually_month,
+                subquery.c.Min_in_the_us_for_prior_24_months_annually_month,
+                subquery.c.Min_in_the_us_for_prior_48_months_annually_month,
+                subquery.c.Min_in_the_us_annually_month,
+                subquery.c.Min_spend_outside_annually_month,
+                subquery.c.Physical_Citizenship,
+                subquery.c.Visa,
+                subquery.c.Max_total_time_been_in_the_us_year,
+                subquery.c.Financial_Citizenship,
+                subquery.c.Residence,
+                subquery.c.Personal_insurance_flag,
+                subquery.c.Need_for_US_based_coverage_flag,
+                subquery.c.Determining_justified_amounts,
+                subquery.c.Bank_account_min_opened_time_prior_to_app_month,
+                subquery.c.Bank_account_info,
+                subquery.c.Bank_balance,
+                subquery.c.Wealth,
+                subquery.c.Time_of_verifiable_US_assets_in_the_US_month,
+                subquery.c.Verifiable_US_assets_in_the_US_million,
+                subquery.c.Document_name,
+                subquery.c.Document_notes,
+                subquery.c.Ownership_Structure,
+                subquery.c.Ownership_Structure_carrier_notes,
+                subquery.c.Minimum_time_spend_outside_of_the_US_Per_Year_week,
+                subquery.c.Foreign_country_specified,
+                subquery.c.Travel_Notes,
+                subquery.c.Identities,
+                subquery.c.Acceptable_residing_country,
+                subquery.c.Foreign_living_condition,
+                subquery.c.Exclusion,
+                subquery.c.Inbound_Identities,
+                subquery.c.Inbound_Citizenship,
+                subquery.c.Citizenship_exclusion_flag,
+                subquery.c.Acceptable_visa_status_type,
+                subquery.c.Min_time_reside_in_us_per_year_month,
+                subquery.c.Min_time_reside_in_us_month,
+                subquery.c.Continue_reside_flag,
+                subquery.c.Nexus_flag,
+                subquery.c.Max_foreign_travel_month,
+                subquery.c.Inbound_Policy_type,
+                subquery.c.Inbound_Notes
+            ).filter(
+                subquery.c.Insurance_company_name == selected_carrier
+)
+
+            if selected_feature:
+                query = query.add_columns(
+                    getattr(subquery.c, selected_feature, None)
+                )
+
+            results = query.all()
+
+            results = [
+                {**dict(row._asdict()), selected_feature: dict(row._asdict()).get(selected_feature)}
+                for row in results
+            ]
 
             if not results:
                 flash('No results found!', category='warning')
@@ -255,88 +399,30 @@ def admin():
         'admin.html', 
         results=results, 
         carrier_values=carrier_values, 
-        selected_carrier=selected_carrier
+        selected_carrier=selected_carrier,
+        selected_feature=selected_feature,
+        feature_dict=feature_dict
     )
 
 
 @views.route('/update', methods=['POST'])
 def update():
+    selected_feature = request.form.get('feature')
+
+    if not selected_feature:
+        flash('No feature selected for update.', category='warning')
+        return redirect(url_for('views.admin'))
+
     for key, value in request.form.items():
-        if key.startswith('update_'):
+        if key.startswith(f'{selected_feature}_'):
             index = key.split('_')[1]
-            carrier_guid_pk = value
+            carrier_guid_pk = request.form.get(f'Carrier_GUID_PK_{index}')
+            feature_value = value
+
             carrier = Carrier.query.get(carrier_guid_pk)
-
             if carrier:
-                carrier.Internal_code = request.form.get(f'Internal_code_{index}')
-                carrier.Alias_used_name = request.form.get(f'Alias_used_name_{index}')
-                carrier.Branch = request.form.get(f'Branch_{index}')
-                carrier.Country = request.form.get(f'Country_{index}')
-                carrier.City = request.form.get(f'City_{index}')
-                carrier.Region = request.form.get(f'Region_{index}')
-                carrier.Include_flag = request.form.get(f'Include_flag_{index}')
-                carrier.Country_category = request.form.get(f'Country_category_{index}')
-                carrier.CountryResidence_Notes = request.form.get(f'CountryResidence_Notes_{index}')
-                carrier.Date_last_updated = request.form.get(f'Date_last_updated_{index}')
-                carrier.Date_last_policy_inforce = request.form.get(f'Date_last_policy_inforce_{index}')
-                carrier.Financial_ratings_institution = request.form.get(f'Financial_ratings_institution_{index}')
-                carrier.Ratings = request.form.get(f'Ratings_{index}')
-                carrier.CarrierInfo_Notes = request.form.get(f'CarrierInfo_Notes_{index}')
-                carrier.Nexus_Conditions = request.form.get(f'Nexus_Conditions_{index}')
-                carrier.Nexus_Notes = request.form.get(f'Nexus_Notes_{index}')
-                carrier.US_Nexus_flag = request.form.get(f'US_Nexus_flag_{index}')
-                carrier.Other_policy_related = request.form.get(f'Other_policy_related_{index}')
-                carrier.Minimum_policy_face_amount_USD_Denominated = request.form.get(f'Minimum_policy_face_amount_USD_Denominated_{index}')
-                carrier.Minimum_global_net_worth_USD_Denominated = request.form.get(f'Minimum_global_net_worth_USD_Denominated_{index}')
-                carrier.Age_related = request.form.get(f'Age_related_{index}')
-                carrier.Citizenship_visa_specified = request.form.get(f'Citizenship_visa_specified_{index}')
-                carrier.NRA_Notes = request.form.get(f'NRA_Notes_{index}')
-                carrier.General = request.form.get(f'General_{index}')
-                carrier.Min_in_the_us_for_prior_12_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_12_months_annually_month_{index}')
-                carrier.Min_in_the_us_for_prior_24_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_24_months_annually_month_{index}')
-                carrier.Min_in_the_us_for_prior_48_months_annually_month = request.form.get(f'Min_in_the_us_for_prior_48_months_annually_month_{index}')
-                carrier.Min_in_the_us_annually_month = request.form.get(f'Min_in_the_us_annually_month_{index}')
-                carrier.Min_spend_outside_annually_month = request.form.get(f'Min_spend_outside_annually_month_{index}')
-                carrier.Max_total_time_been_in_the_us_year = request.form.get(f'Max_total_time_been_in_the_us_year_{index}')
-                carrier.Physical_Citizenship = request.form.get(f'Physical_Citizenship_{index}')
-                carrier.Visa = request.form.get(f'Visa_{index}')
-                carrier.Financial_Citizenship = request.form.get(f'Financial_Citizenship_{index}')
-                carrier.Residence = request.form.get(f'Residence_{index}')
-                carrier.Personal_insurance_flag = request.form.get(f'Personal_insurance_flag_{index}')
-                carrier.Need_for_US_based_coverage_flag = request.form.get(f'Need_for_US_based_coverage_flag_{index}')
-                carrier.Determining_justified_amounts = request.form.get(f'Determining_justified_amounts_{index}')
-                carrier.Bank_account_min_opened_time_prior_to_app_month = request.form.get(f'Bank_account_min_opened_time_prior_to_app_month_{index}')
-                carrier.Bank_account_info = request.form.get(f'Bank_account_info_{index}')
-                carrier.Bank_balance = request.form.get(f'Bank_balance_{index}')
-                carrier.Wealth = request.form.get(f'Wealth_{index}')
-                carrier.Time_of_verifiable_US_assets_in_the_US_month = request.form.get(f'Time_of_verifiable_US_assets_in_the_US_month_{index}')
-                carrier.Verifiable_US_assets_in_the_US_million = request.form.get(f'Verifiable_US_assets_in_the_US_million_{index}')
-                carrier.Document_name = request.form.get(f'Document_name_{index}')
-                carrier.Document_notes = request.form.get(f'Document_notes_{index}')
-                carrier.Ownership_Structure = request.form.get(f'Ownership_Structure_{index}')
-                carrier.Ownership_Structure_carrier_notes = request.form.get(f'Ownership_Structure_carrier_notes_{index}')
-                carrier.Minimum_time_spend_outside_of_the_US_Per_Year_week = request.form.get(f'Minimum_time_spend_outside_of_the_US_Per_Year_week_{index}')
-                carrier.Foreign_country_specified = request.form.get(f'Foreign_country_specified_{index}')
-                carrier.Travel_Notes = request.form.get(f'Travel_Notes_{index}')
-                carrier.Identities = request.form.get(f'Identities_{index}')
-                carrier.Acceptable_residing_country = request.form.get(f'Acceptable_residing_country_{index}')
-                carrier.Foreign_living_condition = request.form.get(f'Foreign_living_condition_{index}')
-                carrier.Exclusion = request.form.get(f'Exclusion_{index}')
-                carrier.Inbound_Identities = request.form.get(f'Inbound_Identities_{index}')
-                carrier.Inbound_Citizenship = request.form.get(f'Inbound_Citizenship_{index}')
-                carrier.Citizenship_exclusion_flag = request.form.get(f'Citizenship_exclusion_flag_{index}')
-                carrier.Acceptable_visa_status_type = request.form.get(f'Acceptable_visa_status_type_{index}')
-                carrier.Min_time_reside_in_us_per_year_month = request.form.get(f'Min_time_reside_in_us_per_year_month_{index}')
-                carrier.Min_time_reside_in_us_month = request.form.get(f'Min_time_reside_in_us_month_{index}')
-                carrier.Continue_reside_flag = request.form.get(f'Continue_reside_flag_{index}')
-                carrier.Nexus_flag = request.form.get(f'Nexus_flag_{index}')
-                carrier.Max_foreign_travel_month = request.form.get(f'Max_foreign_travel_month_{index}')
-                carrier.Inbound_Policy_type = request.form.get(f'Inbound_Policy_type_{index}')
-                carrier.Inbound_Notes = request.form.get(f'Inbound_Notes_{index}')
-
+                setattr(carrier, selected_feature, feature_value)
                 db.session.commit()
-                flash('Record updated successfully!', category='success')
-            else:
-                flash('Record not found!', category='error')
 
-    return redirect(url_for('admin'))
+    flash('Changes saved successfully!', category='success')
+    return redirect(url_for('views.admin'))
