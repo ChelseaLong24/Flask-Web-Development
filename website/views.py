@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import Carrier, Country, CountryResidenceMapping, CarrierInfo, USNexus, USNexusCarrierMapping, NRA, NRAPresenceTypeMapping, NRAFinancialPresence, NRAPhysicalPresence, SSN_TIN_document, Document_carrier_mapping, Approved_Ownership_Structure, Approved_Ownership_Structure_carrier_mapping, Foreign_Travel_Rules_for_USCitizens, Outbound_requirement, Inbound_requirement, ExPats_outbound_mapping, ExPats_Inbound_mapping
+from .models import Carrier, Country, CountryResidenceMapping, CarrierInfo, USNexus, USNexusCarrierMapping, NRA, NRAPresenceTypeMapping, NRAFinancialPresence, \
+                    NRAPhysicalPresence, SSN_TIN_document, Document_carrier_mapping, Approved_Ownership_Structure, Approved_Ownership_Structure_carrier_mapping, \
+                    Foreign_Travel_Rules_for_USCitizens, Outbound_requirement, Inbound_requirement, ExPats_outbound_mapping, ExPats_Inbound_mapping, FeatureRegistry
 from . import db
 
 views = Blueprint('views', __name__)
@@ -196,6 +198,12 @@ def admin():
         'Inbound_Policy_type': 'Inbound Policy Type',
         'Inbound_Notes': 'Inbound Notes'
     }
+
+    # Get added features from FeatureRegistry and integrate into feature_dict
+    additional_features = db.session.query(FeatureRegistry).all()
+    for feature in additional_features:
+        if feature.feature_name not in feature_dict:
+            feature_dict[feature.feature_name] = feature.feature_name
 
     if request.method == 'POST':
         selected_carrier = request.form.get('carrier')
@@ -426,3 +434,49 @@ def update():
 
     flash('Changes saved successfully!', category='success')
     return redirect(url_for('views.admin'))
+
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table, Column, Integer, String, MetaData
+
+@views.route('/add-feature', methods=['GET', 'POST'])
+def add_feature():
+    carrier_values = [carrier[0] for carrier in db.session.query(Carrier.Insurance_company_name).distinct().all()]
+
+    if request.method == 'POST':
+        selected_carrier = request.form.get('carrier')
+        new_feature_name = request.form.get('new_feature_name')
+        new_feature_value = request.form.get('new_feature_value')
+
+        if selected_carrier and new_feature_name and new_feature_value:
+            metadata = MetaData()
+            new_table_name = f"{selected_carrier}_{new_feature_name}"
+            new_table = Table(new_table_name, metadata,\
+                              Column('id', Integer, primary_key=True),\
+                              Column('carrier', String(100)),\
+                              Column('feature_name', String(100)),\
+                              Column('feature_value', String(255))\
+                              )
+
+            metadata.create_all(db.engine)
+
+            insert_query = new_table.insert().values(
+                carrier=selected_carrier,
+                feature_name=new_feature_name,
+                feature_value=new_feature_value
+            )
+            db.session.execute(insert_query)
+            db.session.commit()
+
+            #Save to FeatureRegistry
+            new_feature = FeatureRegistry(
+                carrier=selected_carrier,
+                feature_name=new_feature_name,
+                feature_value=new_feature_value
+            )
+            db.session.add(new_feature)
+            db.session.commit()
+
+            flash('Feature added successfully!', category='success')
+            return redirect(url_for('views.admin'))
+
+    return render_template('add_feature.html', carrier_values=carrier_values)

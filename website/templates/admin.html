@@ -27,8 +27,9 @@
             </div>  
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('views.add_feature') }}" class="btn btn-secondary">Add Feature</a>
     </form>
-
+    
     {% if results %}
     <h2 align="center">Results</h2>
     <form method="POST" action="/update">

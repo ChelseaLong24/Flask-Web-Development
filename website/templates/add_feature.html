@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add Feature{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Add Feature</h1>
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="carrier">Select Carrier:</label>
+                <select name="carrier" id="carrier" class="form-control">
+                    <option value="">Select Carrier</option>
+                    {% for value in carrier_values %}
+                    <option value="{{ value }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="new_feature_name">Feature Name:</label>
+                <input type="text" name="new_feature_name" id="new_feature_name" class="form-control">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="new_feature_value">Feature Value:</label>
+                <input type="text" name="new_feature_value" id="new_feature_value" class="form-control">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Feature</button>
+    </form>
+</div>
+{% endblock %}

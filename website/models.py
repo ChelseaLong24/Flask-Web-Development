@@ -222,3 +222,10 @@ class ExPats_Inbound_mapping(db.Model):
 
     carrier = db.relationship('Carrier', backref=db.backref('expats_inbound_mappings', lazy=True))
     inbound_requirement = db.relationship('Inbound_requirement', backref=db.backref('expats_inbound_mappings', lazy=True))
+
+class FeatureRegistry(db.Model):
+    __tablename__ = 'feature_registry'
+    id = db.Column(db.Integer, primary_key=True)
+    carrier = db.Column(db.String(100), nullable=False)
+    feature_name = db.Column(db.String(100), nullable=False)
+    feature_value = db.Column(db.String(100), nullable=False)
