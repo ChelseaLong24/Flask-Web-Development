@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Add Carrier{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Add Carrier</h1>
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="carrier_name">Carrier Name:</label>
+                <input type="text" name="carrier_name" id="carrier_name" class="form-control" required>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="internal_code">Internal Code:</label>
+                <input type="text" name="internal_code" id="internal_code" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="feature_name">Select Feature:</label>
+                <select name="feature_name" id="feature_name" class="form-control">
+                    <option value="">Select Feature</option>
+                    {% for key, value in feature_dict.items() %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                    <option value="other">Other (Please specify below)</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4" id="new_feature_name_group" style="display: none;">
+                <label for="new_feature_name">New Feature Name:</label>
+                <input type="text" name="new_feature_name" id="new_feature_name" class="form-control">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="feature_value">Feature Value:</label>
+                <input type="text" name="feature_value" id="feature_value" class="form-control" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Carrier</button>
+    </form>
+</div>
+{% endblock %}
+
+

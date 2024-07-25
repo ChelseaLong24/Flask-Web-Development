@@ -3,6 +3,7 @@ from .models import Carrier, Country, CountryResidenceMapping, CarrierInfo, USNe
                     NRAPhysicalPresence, SSN_TIN_document, Document_carrier_mapping, Approved_Ownership_Structure, Approved_Ownership_Structure_carrier_mapping, \
                     Foreign_Travel_Rules_for_USCitizens, Outbound_requirement, Inbound_requirement, ExPats_outbound_mapping, ExPats_Inbound_mapping, FeatureRegistry
 from . import db
+import uuid
 
 views = Blueprint('views', __name__)
 
@@ -480,3 +481,107 @@ def add_feature():
             return redirect(url_for('views.admin'))
 
     return render_template('add_feature.html', carrier_values=carrier_values)
+
+@views.route('/add-carrier', methods=['GET', 'POST'])
+def add_carrier():
+
+    carrier_values = [carrier[0] for carrier in db.session.query(Carrier.Insurance_company_name).distinct().all()]
+
+    feature_dict = {
+        'Insurance_company_name': 'Insurance Company Name',
+        'Alias_used_name': 'Alias Used Name',
+        'Branch': 'Branch',
+        'Include_flag': 'Include Flag',
+        'Country_category': 'Country Category',
+        'Notes': 'Notes',
+        'Nexus_Conditions': 'Nexus Conditions',
+        'Nexus_Notes': 'Nexus Notes',
+        'US_Nexus_flag': 'US Nexus Flag',
+        'Other_policy_related': 'Other Policy Related',
+        'Minimum_policy_face_amount_USD_Denominated': 'Minimum Policy Face Amount (USD Denominated)',
+        'Minimum_global_net_worth_USD_Denominated': 'Minimum Global Net Worth (USD Denominated)',
+        'Age_related': 'Age Related',
+        'Citizenship_visa_specified': 'Citizenship Visa Specified',
+        'General': 'General',
+        'Min_in_the_us_for_prior_12_months_annually_month': 'Min in US for Prior 12 Months (Annually)',
+        'Min_in_the_us_for_prior_24_months_annually_month': 'Min in US for Prior 24 Months (Annually)',
+        'Min_in_the_us_for_prior_48_months_annually_month': 'Min in US for Prior 48 Months (Annually)',
+        'Min_in_the_us_annually_month': 'Min in US Annually',
+        'Min_spend_outside_annually_month': 'Min Spend Outside Annually',
+        'Physical_Citizenship': 'Physical Citizenship',
+        'Visa': 'Visa',
+        'Max_total_time_been_in_the_us_year': 'Max Total Time Been in US (Year)',
+        'Financial_Citizenship': 'Financial Citizenship',
+        'Residence': 'Residence',
+        'Personal_insurance_flag': 'Personal Insurance Flag',
+        'Need_for_US_based_coverage_flag': 'Need for US Based Coverage Flag',
+        'Determining_justified_amounts': 'Determining Justified Amounts',
+        'Bank_account_min_opened_time_prior_to_app_month': 'Bank Account Min Opened Time Prior to App (Month)',
+        'Bank_account_info': 'Bank Account Info',
+        'Bank_balance': 'Bank Balance',
+        'Wealth': 'Wealth',
+        'Time_of_verifiable_US_assets_in_the_US_month': 'Time of Verifiable US Assets in the US (Month)',
+        'Verifiable_US_assets_in_the_US_million': 'Verifiable US Assets in the US (Million)',
+        'Document_name': 'Document Name',
+        'Document_notes': 'Document Notes',
+        'Ownership_Structure': 'Ownership Structure',
+        'Ownership_Structure_carrier_notes': 'Ownership Structure Carrier Notes',
+        'Minimum_time_spend_outside_of_the_US_Per_Year_week': 'Minimum Time Spend Outside of the US (Per Year - Week)',
+        'Foreign_country_specified': 'Foreign Country Specified',
+        'Travel_Notes': 'Travel Notes',
+        'Identities': 'Identities',
+        'Acceptable_residing_country': 'Acceptable Residing Country',
+        'Foreign_living_condition': 'Foreign Living Condition',
+        'Exclusion': 'Exclusion',
+        'Inbound_Identities': 'Inbound Identities',
+        'Inbound_Citizenship': 'Inbound Citizenship',
+        'Citizenship_exclusion_flag': 'Citizenship Exclusion Flag',
+        'Acceptable_visa_status_type': 'Acceptable Visa Status Type',
+        'Min_time_reside_in_us_per_year_month': 'Min Time Reside in US per Year (Month)',
+        'Min_time_reside_in_us_month': 'Min Time Reside in US (Month)',
+        'Continue_reside_flag': 'Continue Reside Flag',
+        'Nexus_flag': 'Nexus Flag',
+        'Max_foreign_travel_month': 'Max Foreign Travel (Month)',
+        'Inbound_Policy_type': 'Inbound Policy Type',
+        'Inbound_Notes': 'Inbound Notes'
+    }
+
+    # Get added features from FeatureRegistry and integrate into feature_dict
+    additional_features = db.session.query(FeatureRegistry).all()
+    for feature in additional_features:
+        if feature.feature_name not in feature_dict:
+            feature_dict[feature.feature_name] = feature.feature_name
+
+    if request.method == 'POST':
+        carrier_name = request.form.get('carrier_name')
+        internal_code = request.form.get('internal_code')
+        feature_name = request.form.get('feature_name')
+        new_feature_name = request.form.get('new_feature_name')
+        feature_value = request.form.get('feature_value')
+
+        if feature_name == 'other':
+            feature_name = new_feature_name
+
+        if carrier_name and feature_name and feature_value:
+            carrier_guid = str(uuid.uuid4())  # Generate new Carrier GUID
+            new_carrier = Carrier(
+                Carrier_GUID_PK=carrier_guid,
+                Internal_code=internal_code,
+                Insurance_company_name=carrier_name,
+            )
+            db.session.add(new_carrier)
+            db.session.commit()
+
+
+            new_feature = FeatureRegistry(
+                carrier=new_carrier.Insurance_company_name,
+                feature_name=feature_name,
+                feature_value=feature_value
+            )
+            db.session.add(new_feature)
+            db.session.commit()
+
+            flash('Carrier added successfully!', category='success')
+            return redirect(url_for('views.admin'))
+
+    return render_template('add_carrier.html', carrier_values=carrier_values, feature_dict=feature_dict)

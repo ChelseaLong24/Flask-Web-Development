@@ -87,6 +87,16 @@
   });
   }
 </script>
+<script type="text/javascript">
+  document.getElementById('feature_name').addEventListener('change', function() {
+    var newFeatureInputGroup = document.getElementById('new_feature_name_group');
+    if (this.value === 'other') {
+      newFeatureInputGroup.style.display = 'block';
+    } else {
+      newFeatureInputGroup.style.display = 'none';
+    }
+  });
+</script>
 {% endblock %}
-  </body>
+</body>
 </html>
