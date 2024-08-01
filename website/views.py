@@ -35,6 +35,7 @@ def home():
             #Country.Region,
             Country.Include_flag,
             CountryResidenceMapping.Notes.label('CountryResidence_Notes'),
+            CountryResidenceMapping.Country_category,
             USNexus.Nexus_Conditions,
             USNexus.Nexus_Notes,
             #NRA.US_Nexus_flag,
